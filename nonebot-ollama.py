@@ -1,21 +1,20 @@
 from requests import *
 from nonebot import on_message
 from nonebot.adapters import Bot, Event
+from nonebot.rule import to_me
 
-ollama = on_message(priority=5, block=False)
+ollama = on_message(priority=5, block=False, rule=to_me())
 @ollama.handle()
 async def ollama_handle(bot=Bot, event=Event):
 
-    user= event.get_user_id()
-    msg= event.get_message()
-
+    msg= str(event.get_message())
     model = 'qwen2.5:0.5b'
     url = 'http://127.0.0.1:11434/'
     parameters = {
         "model": model,
         "messages": [
             {
-                "role": user,
+                "role": 'user',
                 "content": msg,
             }
         ],
