@@ -21,9 +21,9 @@ class ScopedConfig:
     priority: int = 5    # 填写优先级，数字越小优先级越高，推荐设置为低优先
 ```
 
-# 链接
+# 相关链接
 nonebot: https://nonebot.dev/   
 ollama: https://ollama.org.cn/
 
-# 协议
+# 开源协议
 MIT
