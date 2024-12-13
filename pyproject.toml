@@ -21,3 +21,7 @@ distribution = true
 [tool.pdm.package]
 include = ["src/**/*", "LICENSE", "README.md"]
 exclude = ["tests/**/*", "dist/"]
+[dependency-groups]
+dev = [
+    "twine>=6.0.1",
+]

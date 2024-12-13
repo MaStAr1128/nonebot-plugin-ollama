@@ -7,7 +7,7 @@
 当前版本：v0.1
 
 # 安装说明
-### nb-cli（暂未发布）
+### nb-cli
 ```shell
 nb plugin install nonebot-plugin-ollama
 ```
