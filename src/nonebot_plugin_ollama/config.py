@@ -6,7 +6,7 @@ class ScopedConfig(BaseModel):
     min_priority: int = 5
     max_histories: int = 50
 
-    @field_validator('priority')
+    @field_validator('min_priority')
     @classmethod
     def check_priority(cls, v: int):
         if v >= 1:
