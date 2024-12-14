@@ -6,8 +6,8 @@ from nonebot.plugin import PluginMetadata
 from nonebot import get_plugin_config
 from .config import Config
 from nonebot_plugin_userinfo import get_user_info
-import re
 from datetime import datetime
+import re
 
 __plugin_meta__ = PluginMetadata(
     name="nonebot-plugin-ollama",
