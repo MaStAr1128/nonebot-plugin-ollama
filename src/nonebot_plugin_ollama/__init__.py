@@ -65,7 +65,7 @@ async def main(bot=Bot, event=Event):
     if(doRec):
         messages[index].append({
                 "role": 'user',
-                "content": formatted_now+userID + ": “" + msg + "”",
+                "content": formatted_now+userID + ": " + msg,
             })
 
 
@@ -94,7 +94,7 @@ async def ollama_handle(bot=Bot, event=Event):
         return
 
     # 判断是否达到记录上限
-    elif len(messages[index]) >= plugin_config.max_histories:
+    if len(messages[index]) >= plugin_config.max_histories:
         del messages[index][0]
     
     # 向ollama发送请求
@@ -108,7 +108,7 @@ async def ollama_handle(bot=Bot, event=Event):
         if(doRec):
             messages[index].append({
                 "role": 'user',
-                "content": formatted_now+userID + ": “" + msg + "”",
+                "content": formatted_now+userID + ": " + msg,
             })
             doRec = False
 
