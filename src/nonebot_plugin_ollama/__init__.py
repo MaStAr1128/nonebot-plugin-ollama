@@ -69,7 +69,7 @@ async def main(bot=Bot, event=Event):
             })
 
 
-ollama = on_command(cmd, priority=plugin_config.min_priority+2, block=False)
+ollama = on_command(cmd[0], aliases=set(cmd), priority=plugin_config.min_priority+2, block=False)
 @ollama.handle()
 async def ollama_handle(bot=Bot, event=Event):
 
