@@ -5,6 +5,8 @@ class ScopedConfig(BaseModel):
     url: str = 'http://127.0.0.1:11434/'
     min_priority: int = 5
     max_histories: int = 50
+    listening: str = []
+    cmd: str = []
 
     @field_validator('min_priority')
     @classmethod

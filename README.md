@@ -19,6 +19,7 @@ class ScopedConfig:
     # 该优先级为clear指令优先级，对话优先级为 min_priority+1
     max_histories: int = 100    # 填写最大历史对话记录条数
     listening: str = ["00110721", "10001"] # 填写使用对话功能的群聊号或私聊对方QQ号
+    cmd: str = ["ollama ", "qwen "] # 填写希望机器人回复此消息的命令前缀
 ```
 
 ### 隐私数据管理

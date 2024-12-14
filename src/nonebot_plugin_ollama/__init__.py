@@ -5,6 +5,9 @@ from nonebot.rule import to_me
 from nonebot.plugin import PluginMetadata
 from nonebot import get_plugin_config
 from .config import Config
+from nonebot_plugin_userinfo import get_user_info
+import re
+from datetime import datetime
 
 __plugin_meta__ = PluginMetadata(
     name="nonebot-plugin-ollama",
@@ -15,47 +18,110 @@ __plugin_meta__ = PluginMetadata(
     homepage="https://github.com/MaStAr1128/nonebot-plugin-ollama"
 )
 
+def getGroupID(s):
+    match = re.search(r'\d+', s)
+    if match:
+        id = match.group()
+        return id
+    return None
+
 plugin_config = get_plugin_config(Config).ollama
 
-messages = []
+group = plugin_config.listening
 
-# 清空记录
-ollamaClear = on_command(cmd="clear", priority=plugin_config.min_priority, block=True, rule=to_me())
-@ollamaClear.handle()
-async def ollamaClear_handle(bot=Bot, event=Event):
-    messages.clear()
-    await ollamaClear.send("System: 对话记录已清空.")
+cmd = plugin_config.cmd
+
+index = 0x0d000721
+
+messages = [[ None for _ in range(0) ] for _ in range(len(group))]
+
+doRec = True
+
+doServe = False
 
 # 聊天
-ollama = on_message(priority=plugin_config.min_priority+1, block=False, rule=to_me())
+
+rec = on_message(priority=plugin_config.min_priority+3, block=False)
+@rec.handle()
+async def main(bot=Bot, event=Event):
+    doServe = False
+    msg= str(event.get_message())
+    user_info = await get_user_info(bot, event, event.get_user_id())
+    userID = user_info.user_name
+
+    now = datetime.now()
+    formatted_now = now.strftime("[%Y-%m-%d %H:%M:%S] ")
+
+    groupID = getGroupID(str(event.get_session_id()))
+
+    for i in range(len(group)):
+        if(group[i] == groupID):
+            index = i
+            doServe = True
+    
+    if(not doServe):
+        return
+
+    if(doRec):
+        messages[index].append({
+                "role": 'user',
+                "content": formatted_now+userID + ": “" + msg + "”",
+            })
+
+
+ollama = on_command(cmd, priority=plugin_config.min_priority+2, block=False)
 @ollama.handle()
 async def ollama_handle(bot=Bot, event=Event):
 
+    doRec = True
+
+    doServe = False
+
     # 获取消息
     msg= str(event.get_message())
-    # 判断是否为空
-    if msg == '':
-        await ollama.send("Warning: Empty message.")
+
+    for i in range(len(cmd)):
+        msg = msg.replace(cmd[i], "", 1)
+
+    groupID = getGroupID(str(event.get_session_id()))
+
+    for i in range(len(group)):
+        if(group[i] == groupID):
+            index = i
+            doServe = True
+
+    if(not doServe):
+        return
+
     # 判断是否达到记录上限
-    elif len(messages) >= 2 * plugin_config.max_histories:
-        messages.clear()
-        await ollama.send(f"Warning: 对话记录已达到{plugin_config.max_histories}条的上限，现已清空.")
+    elif len(messages[index]) >= plugin_config.max_histories:
+        del messages[index][0]
+    
     # 向ollama发送请求
     else:
-        messages.append({
-            "role": 'user',
-            "content": msg,
-        })
+        user_info = await get_user_info(bot, event, event.get_user_id())
+        userID = user_info.user_name
+
+        now = datetime.now()
+        formatted_now = now.strftime("[%Y-%m-%d %H:%M:%S] ")
+        
+        if(doRec):
+            messages[index].append({
+                "role": 'user',
+                "content": formatted_now+userID + ": “" + msg + "”",
+            })
+            doRec = False
 
         parameters = {
             "model": plugin_config.model,
-            "messages": messages,
+            "messages": messages[index],
             "stream": False,
         }
 
         response = post(plugin_config.url+'api/chat', json=parameters)
         if response.status_code == 200:
             await ollama.send(response.json()["message"]["content"])
-            messages.append(response.json()["message"])
+            messages[index].append(response.json()["message"])
+            doRec = False
         else:
             await ollama.send(f"Error: {response.status_code}")
