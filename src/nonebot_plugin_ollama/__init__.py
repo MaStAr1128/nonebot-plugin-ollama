@@ -20,6 +20,22 @@ plugin_config = get_plugin_config(Config).ollama
 
 messages = []
 
+# 卸载模型
+ollamaUnload = on_command(cmd="unload", priority=plugin_config.min_priority, block=True, rule=to_me())
+@ollamaUnload.handle()
+async def ollamaUnload_handle(bot=Bot, event=Event):
+    unload = {
+        "model": plugin_config.model,
+        "messages": [],
+        "keep_alive": 0,
+    }
+    async with aiohttp.ClientSession() as session:
+        async with session.post(plugin_config.url+'api/chat', json=unload) as response:
+            if response.status == 200:
+                await ollamaUnload.send("System: 模型已卸载.")
+            else:
+                await ollamaUnload.send(f"Error: {response.status}")
+
 # 清空记录
 ollamaClear = on_command(cmd="clear", priority=plugin_config.min_priority, block=True, rule=to_me())
 @ollamaClear.handle()
@@ -57,7 +73,8 @@ async def ollama_handle(bot=Bot, event=Event):
         async with aiohttp.ClientSession() as session:
             async with session.post(plugin_config.url+'api/chat', json=parameters) as response:
                 if response.status == 200:
-                    await ollama.send(response.json()["message"]["content"])
-                    messages.append(response.json()["message"])
+                    json = await response.json()
+                    await ollama.send(json["message"]["content"])
+                    messages.append(json["message"])
                 else:
                     await ollama.send(f"Error: {response.status}")
