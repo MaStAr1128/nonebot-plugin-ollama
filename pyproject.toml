@@ -1,11 +1,14 @@
 [project]
 name = "nonebot-plugin-ollama"
-version = "0.2.0"
-description = "通过ollama提供的接口， 将你的nonebot连接到本地部署的基于ollama框架的LLM模型。"
+version = "0.2.3"
+description = "通过ollama提供的接口，将你的nonebot连接到本地部署的基于ollama框架的模型"
 authors = [
     {name = "MaStAr", email = "2024381053@mails.szu.edu.cn"},
 ]
-dependencies = ["requests>=2.32.3", "nb-cli>=1.4.2", "nonebot2>=2.4.0"]
+dependencies = [
+    "nonebot2>=2.4.0",
+    "aiohttp>=3.11.10",
+]
 requires-python = ">=3.9"
 readme = "README.md"
 license = {text = "MIT"}
@@ -14,14 +17,15 @@ license = {text = "MIT"}
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
-
 [tool.pdm]
 distribution = true
 
 [tool.pdm.package]
 include = ["src/**/*", "LICENSE", "README.md"]
 exclude = ["tests/**/*", "dist/"]
+
 [dependency-groups]
 dev = [
     "twine>=6.0.1",
+    "build>=1.2.2.post1",
 ]
