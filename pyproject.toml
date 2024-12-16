@@ -4,6 +4,7 @@ version = "0.2.3"
 description = "通过ollama提供的接口，将你的nonebot连接到本地部署的基于ollama框架的模型"
 authors = [
     {name = "MaStAr", email = "2024381053@mails.szu.edu.cn"},
+    {name = "C9QuaRtz", email = "c9quartz@outlook.com}
 ]
 dependencies = [
     "nonebot2>=2.4.0",
