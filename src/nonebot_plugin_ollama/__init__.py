@@ -1,4 +1,4 @@
-from requests import *
+import aiohttp
 from nonebot import on_message, on_command
 from nonebot.adapters import Bot, Event
 from nonebot.rule import to_me
@@ -15,6 +15,7 @@ __plugin_meta__ = PluginMetadata(
     usage="@你的bot对话即可",
     type="application",
     config=Config,
+    supported_adapters={"~onebot.v11"},
     homepage="https://github.com/MaStAr1128/nonebot-plugin-ollama"
 )
 
@@ -117,7 +118,7 @@ async def ollama_handle(bot=Bot, event=Event):
             "messages": messages[index],
             "stream": False,
         }
-
+        
         response = post(plugin_config.url+'api/chat', json=parameters)
         if response.status_code == 200:
             await ollama.send(response.json()["message"]["content"])
