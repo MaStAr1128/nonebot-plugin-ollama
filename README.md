@@ -37,7 +37,7 @@ class ScopedConfig:
 
 1. 自动切换llava进行图片处理
 2. 在config.py内添加对Modelfile的支持
-3. 聊天记录导出
+3. 聊天记录（日志）导出
 
 最终目标：提供API，为其他开发者实现跨插件事件响应与处理。
 
