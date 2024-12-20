@@ -56,14 +56,14 @@ async def main(bot=Bot, event=Event):
     groupID = getGroupID(str(event.get_session_id()))
 
     for i in range(len(group)):
-        if(group[i] == groupID):
+        if group[i] == groupID:
             index = i
             doServe = True
     
-    if(not doServe):
+    if not doServe:
         return
 
-    if(doRec):
+    if doRec:
         messages[index].append({
                 "role": 'user',
                 "content": formatted_now+userID + ": " + msg,
@@ -87,11 +87,11 @@ async def ollama_handle(bot=Bot, event=Event):
     groupID = getGroupID(str(event.get_session_id()))
 
     for i in range(len(group)):
-        if(group[i] == groupID):
+        if group[i] == groupID:
             index = i
             doServe = True
 
-    if(not doServe):
+    if not doServe:
         return
 
     # 判断是否达到记录上限
@@ -106,7 +106,7 @@ async def ollama_handle(bot=Bot, event=Event):
         now = datetime.now()
         formatted_now = now.strftime("[%Y-%m-%d %H:%M:%S] ")
         
-        if(doRec):
+        if doRec:
             messages[index].append({
                 "role": 'user',
                 "content": formatted_now+userID + ": " + msg,
