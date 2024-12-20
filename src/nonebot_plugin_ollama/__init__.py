@@ -7,7 +7,6 @@ from nonebot import get_plugin_config
 from .config import Config
 from nonebot_plugin_userinfo import get_user_info
 from datetime import datetime
-import re
 
 __plugin_meta__ = PluginMetadata(
     name="nonebot-plugin-ollama",
@@ -20,11 +19,7 @@ __plugin_meta__ = PluginMetadata(
 )
 
 def getGroupID(s):
-    match = re.search(r'\d+', s)
-    if match:
-        id = match.group()
-        return id
-    return None
+    return s.split("_")[1]
 
 plugin_config = get_plugin_config(Config).ollama
 
@@ -34,7 +29,7 @@ cmd = plugin_config.cmd
 
 index = 0x0d000721
 
-messages = [[ None for _ in range(0) ] for _ in range(len(group))]
+messages = [[ ] for _ in range(len(group))]
 
 doRec = True
 
@@ -53,12 +48,11 @@ async def main(bot=Bot, event=Event):
     now = datetime.now()
     formatted_now = now.strftime("[%Y-%m-%d %H:%M:%S] ")
 
-    groupID = getGroupID(str(event.get_session_id()))
+    groupID = getGroupID(event.get_session_id())
 
-    for i in range(len(group)):
-        if group[i] == groupID:
-            index = i
-            doServe = True
+    if groupID in group:
+        index = group.index(groupID)
+        doServe = True
     
     if not doServe:
         return
